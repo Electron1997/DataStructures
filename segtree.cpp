@@ -26,17 +26,14 @@ auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 cout << duration.count() << endl;
 */
 
-// N : number of nodes in the segtree, 2^20 = 1048576
-template<class type = ll, int N = 1048576>
+// N : number of nodes in the segtree (2^20 = 1048576), e : neutral element
+template<class type = ll, type e = 0, int N = 1048576>
 struct segtree{
 
 	// Associative operation
 	type op(const type& a, const type& b){
-		return a + b;
+		return min(a, b);
 	}
-
-	// Neutral element
-	const type e = 0;
 
 	type tree[N];
 
@@ -46,7 +43,7 @@ struct segtree{
 		for(int i = 0; i < n; ++i){
 			tree[M + i] = a[i];
 		}
-		for(int i = n; i < M; ++i){
+		for(int i = M + n; i < N; ++i){
 			tree[i] = e;
 		}
 		for(int i = M - 1; i > 0; --i){
@@ -63,9 +60,9 @@ struct segtree{
 			return tree[i];
 		}
 		int M = (L + R) / 2;
-		ll val = e;
-		val += range(l, min(M, r), L, M, i * 2);
-		val += range(max(M, l), r, M, R, i * 2 + 1);
+		type val = e;
+		val = op(val, range(l, min(M, r), L, M, i * 2));
+		val = op(val, range(max(M, l), r, M, R, i * 2 + 1));
 		return val;
 	}
 
@@ -87,14 +84,14 @@ int main(){
 	*/
     int n, m;
     cin >> n >> m;
-    ll a[n];
+    int a[n];
     read(a, n);
-    segtree<>* S = (segtree<>*) malloc(sizeof(segtree<>));
+    segtree<int, INT_MAX>* S = (segtree<int, INT_MAX>*) malloc(sizeof(segtree<int, INT_MAX>));
     S->build_tree(a, n);
     loop(i, m){
-    	char q;
+    	int q;
     	cin >> q;
-    	if(q == 's'){
+    	if(q == 1){
     		int i;
     		ll v;
     		cin >> i >> v;
