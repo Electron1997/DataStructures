@@ -27,7 +27,7 @@ cout << duration.count() << endl;
 */
 
 // N : number of nodes in the segtree (2^20 = 1048576), e : neutral element
-template<class type = ll, type e = 0, int N = 1048576>
+template<class type = ll, type e = INT_MAX, int N = 1048576>
 struct segtree{
 
 	// Associative operation
@@ -86,7 +86,7 @@ int main(){
     cin >> n >> m;
     int a[n];
     read(a, n);
-    segtree<int, INT_MAX>* S = (segtree<int, INT_MAX>*) malloc(sizeof(segtree<int, INT_MAX>));
+    segtree<int>* S = (segtree<int>*) malloc(sizeof(segtree<int>));
     S->build_tree(a, n);
     loop(i, m){
     	int q;
