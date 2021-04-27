@@ -26,25 +26,27 @@ auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 cout << duration.count() << endl;
 */
 
-// N : number of nodes in the segtree (2^20 = 1048576), e : neutral element
-template<class type = ll, type e = INT_MAX, int N = 1048576>
+// N : number of nodes in the segtree (2^20 = 1048576)
+template<class type = ll, int N = 1048576>
 struct segtree{
+
+	// E: neutral element (set by build_tree())
+	type E, tree[N];
 
 	// Associative operation
 	type op(const type& a, const type& b){
-		return min(a, b);
+		return a + b;
 	}
 
-	type tree[N];
-
-	// Time: O(Nlog(N))
-	void build_tree(type a[], int n, bool pow2 = false){
+	// Time: O(N)
+	void build_tree(type a[], int n, type e, bool pow2 = false){
+		E = e;
 		int M = N / 2;
 		for(int i = 0; i < n; ++i){
 			tree[M + i] = a[i];
 		}
 		for(int i = M + n; i < N; ++i){
-			tree[i] = e;
+			tree[i] = E;
 		}
 		for(int i = M - 1; i > 0; --i){
 			tree[i] = op(tree[2 * i], tree[2 * i + 1]);
@@ -54,19 +56,19 @@ struct segtree{
 	// Gets value for range [l, r[ (Time: O(log(N)))
 	type range(int l, int r, int L = 0, int R = N / 2, int i = 1){
 		if(r <= L || l >= R){
-			return e;
+			return E;
 		}
 		if(l <= L && r >= R){
 			return tree[i];
 		}
 		int M = (L + R) / 2;
-		type val = e;
+		type val = E;
 		val = op(val, range(l, min(M, r), L, M, i * 2));
 		val = op(val, range(max(M, l), r, M, R, i * 2 + 1));
 		return val;
 	}
 
-	// Sets value of i-th element to v (Time: O(log(N)))
+	// Sets i-th element to v (Time: O(log(N)))
 	void update(int i, type v){
 		i += N / 2;
 		tree[i] = v;
@@ -84,16 +86,15 @@ int main(){
 	*/
     int n, m;
     cin >> n >> m;
-    int a[n];
+    ll a[n];
     read(a, n);
-    segtree<int>* S = (segtree<int>*) malloc(sizeof(segtree<int>));
-    S->build_tree(a, n);
+    segtree<>* S = (segtree<>*) malloc(sizeof(segtree<>));
+    S->build_tree(a, n, 0);
     loop(i, m){
     	int q;
     	cin >> q;
     	if(q == 1){
-    		int i;
-    		ll v;
+    		int i, v;
     		cin >> i >> v;
     		S->update(i, v);
     	}else{
