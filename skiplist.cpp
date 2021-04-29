@@ -61,13 +61,20 @@ struct skiplist{
 		return h->above;
 	}
 
-	inline add_layer(){ 
+	inline void add_layer(){ 
 		head_top = add_above(head_top, VAL_MIN);
 		tail_top = add_above(tail_top, VAL_MAX);
 		head_top->right = tail_top;
 		tail_top->left = head_top;
 		head_top->link_length = length + 1;
 		++height;
+	}
+
+	inline node* delete_top(node *top){
+		top = top->below;
+		delete top->above;
+		top->above = NULL;
+		return top;
 	}
 
 	// Links pos.left<->new_node<->pos (does not set link lengths)
@@ -191,12 +198,8 @@ struct skiplist{
 
 			// Remove redundant layers
 			while(height > 1 && head_top->right == tail_top){
-				head_top = head_top->below;
-				delete head_top->above;
-				head_top->above = NULL;
-				tail_top = tail_top->below;
-				delete tail_top->above;
-				tail_top->above = NULL;
+				head_top = delete_top(head_top);
+				tail_top = delete_top(tail_top);
 				--height;
 			}
 
