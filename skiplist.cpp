@@ -13,7 +13,6 @@ using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
 
-
 /* // TIME
 auto start = chrono::high_resolution_clock::now();
 // ...
@@ -21,9 +20,6 @@ auto stop = chrono::high_resolution_clock::now();
 auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 cout << duration.count() << endl;
 */
-
-// rng() generates u.a.r. from [0, 2^32 - 1]
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 // Creates skip list with probability NUM/DEN
 template<class type, type VAL_MIN = INT_MIN, type VAL_MAX = INT_MAX, int NUM = 1, int DEN = 2>
@@ -127,6 +123,23 @@ struct skiplist{
 			}
 		}
 		return curr->data;
+	}
+
+	// Returns index of leftmost node with value at least val
+	inline int index(type val){
+		int i = -1;
+		node *curr = head_top;
+		while(curr->data < val){
+			if(curr->right->data < val){
+				i += curr->link_length;
+				curr = curr->right;
+			}else if(curr->below){
+				curr = curr->below;
+			}else{
+				break;
+			}
+		}
+		return i + 1;
 	}
 
 	// Adds an element with value val to the list (Expected Time: O(log(length)))
@@ -233,21 +246,27 @@ int main(){
 	ios_base::sync_with_stdio(false);	// unsync C- and C++-streams (stdio, iostream)
 	cin.tie(NULL);	// untie cin from cout (no automatic flush before read)
 	*/
-    int T;
-    cin >> T;
-    skiplist<int> sl;
-    loop(t, T){
-        int a, b;
-        cin >> a >> b;
-        if(a == 1){
-        	sl.insert(b);
-        	sl.print();
-        }else if(a == 2){
-        	sl.remove(b);
-        	sl.print();
-        }else{
-        	cout << sl.get(b) << endl;
-        }
+    int n;
+    cin >> n;
+    pair<int, int> a[n];
+    loop(i, n){
+    	cin >> a[i].f;
+    	a[i].s = i;
     }
+    int b[n];
+    read(b, n);
+    sort(a, a + n);
+    skiplist<int> list;
+    int sol[n];
+    for(int i = n - 1; i >= 0; --i){
+    	list.insert(a[i].s);
+    	int j = list.index(a[i].s);
+    	if(n - i - j < b[a[i].s]){
+    		sol[a[i].s] = -1;
+    	}else{
+    		sol[a[i].s] = list.get(j + b[a[i].s] - 1) - a[i].s + 1;
+    	}
+    }
+    show(sol, n);
     return 0;
 }
