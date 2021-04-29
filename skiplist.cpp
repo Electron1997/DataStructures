@@ -31,11 +31,11 @@ struct skiplist{
 
 	struct node{
 
-		node(type val) : left(NULL), right(NULL), above(NULL), below(NULL), data(val){}
-
 		node *left, *right, *above, *below;
 		type data;
+		int link_length;	// Length of the link from this node to the node to its right
 	
+		node(type val) : left(NULL), right(NULL), above(NULL), below(NULL), data(val), link_length(0){}
 	};
 
 	// rng() generates u.a.r. from [0, 2^32 - 1]
@@ -46,46 +46,80 @@ struct skiplist{
 
 	node *head, *head_top, *tail, *tail_top;
 
-	// Initialize rng, set up sentinels
+	// Initializes rng, sets up sentinels
 	skiplist() : length(0), height(1), rng(mt19937(chrono::steady_clock::now().time_since_epoch().count())){
 		head = head_top = new node(VAL_MIN);
 		tail = tail_top = new node(VAL_MAX);
 		head->right = tail;
 		tail->left = head;
+		head->link_length = 1;
+	}
+	
+	inline node* add_above(node *h, type val){
+		h->above = new node(val);
+		h->above->below = h;
+		return h->above;
 	}
 
-	inline add_layer(){
-		head_top->above = new node(VAL_MIN);
-		head_top->above->below = head_top;
-		head_top = head_top->above;
-		tail_top->above = new node(VAL_MAX);
-		tail_top->above->below = tail_top;
-		tail_top = tail_top->above;
+	inline add_layer(){ 
+		head_top = add_above(head_top, VAL_MIN);
+		tail_top = add_above(tail_top, VAL_MAX);
 		head_top->right = tail_top;
 		tail_top->left = head_top;
+		head_top->link_length = length + 1;
 		++height;
 	}
 
-	// Finds first node with value not less than val in list with head h
-	inline node* find(node* h, type val){
-		for(; h->data < val; h = h->right);
+	// Links pos.left<->new_node<->pos (does not set link lengths)
+	inline void link(node *new_node, node *pos){
+		new_node->left = pos->left;
+		new_node->right = pos;
+		new_node->left->right = new_node;
+		new_node->right->left = new_node;
+	}
+
+	// left<->target<->right --> left<->right (updates link lengths)
+	inline void unlink(node *target){
+		target->left->link_length += target->link_length - 1;
+		target->left->right = target->right;
+		target->right->left = target->left;
+	}
+
+	// Finds rightmost node with value less than val in list with head h (linear single layer search)
+	inline node* find(node *h, type val){
+		while(h->right->data < val){
+			h = h->right;
+		}
 		return h;
 	}
 
-	inline node* ffind(node* h, type val){
-		node* pos = find(head_top, val);
-		for(; pos->below; pos = find(pos->below->left, val));
+	// Finds rightmost node with value less than val in the skiplist with head top h (multilayer search)
+	inline node* ffind(node *h, type val){
+		node *pos = find(head_top, val);
+		while(pos->below){
+			pos = find(pos->below, val);
+		}
 		return pos;
 	}
 
 	// Returns first node with value not less than val (Expected Time: O(log(length)))
 	inline node* find(type val){
-		return ffind(head, val);
+		return ffind(head, val)->right;
 	}
 
 	// Returns value at index (Expected Time: O(log(length)))
 	inline type get(int index){
-		return VAL_MIN;
+		int i = -1;	// Offset for 0-based indexing
+		node *curr = head_top;
+		while(i < index){
+			if(i + curr->link_length <= index){
+				i += curr->link_length;
+				curr = curr->right;
+			}else{
+				curr = curr->below;
+			}
+		}
+		return curr->data;
 	}
 
 	// Adds an element with value val to the list (Expected Time: O(log(length)))
@@ -96,32 +130,34 @@ struct skiplist{
 		}
 		if(layers > height){
 			add_layer();
+			layers = height;	// Increase height at most by one (heuristic)
 		}
-		int layer = height;
-		node *right = find(head_top, val);
-		node *left = right->left;
-		while(layer > layers){
-			right = find(left->below, val);
-			left = right->left;
-			--layer;
+
+		// Update lower layers
+		node *new_node = new node(val), *pos = find(val);
+		new_node->link_length = 1;
+		link(new_node, pos);
+		for(int layer = 2, link_length = 1; layer <= layers; ++layer){
+			while(!pos->above){
+				link_length += pos->link_length;
+				pos = pos->right;
+			}
+			pos = pos->above;
+			new_node = add_above(new_node, val);
+			new_node->link_length = link_length;
+			pos->left->link_length = pos->left->link_length - link_length + 1;
+			link(new_node, pos);
 		}
-		node* new_node = new node(val);
-		left->right = new_node;
-		right->left = new_node;
-		new_node->left = left;
-		new_node->right = right;
-		while(left->below){
-			right = find(left->below, val);
-			left = right->left;
-			new_node->below = new node(val);
-			new_node->below->above = new_node;
-			new_node = new_node->below;
-			left->right = new_node;
-			right->left = new_node;
-			new_node->left = left;
-			new_node->right = right;
-			--layer;
+
+		// Update link lengths in upper layers
+		for(int layer = layers + 1; layer <= height; ++layer){
+			while(!pos->above){
+				pos = pos->right;
+			}
+			pos = pos->above;
+			++pos->left->link_length;
 		}
+
 		++length;
 	}
 
@@ -129,16 +165,31 @@ struct skiplist{
 	inline void remove(type val){
 		node* target = find(val);
 		if(target->data == val){
+			int layer = 1;
+
+			// Update lower layers
 			while(target->above){
-				target->left->right = target->right;
-				target->right->left = target->left;
+				unlink(target);
 				target = target->above;
 				delete target->below;
+				++layer;
 			}
-			target->left->right = target->right;
-			target->right->left = target->left;
+			node *pos = target->left;
+			unlink(target);
 			delete target;
-			--length;
+			++layer;
+
+			// Update link_lengths in upper layers
+			while(layer <= height){
+				while(!pos->above){
+					pos = pos->left;
+				}
+				pos = pos->above;
+				--pos->link_length;
+				++layer;
+			}
+
+			// Remove redundant layers
 			while(height > 1 && head_top->right == tail_top){
 				head_top = head_top->below;
 				delete head_top->above;
@@ -148,22 +199,28 @@ struct skiplist{
 				tail_top->above = NULL;
 				--height;
 			}
+
+			--length;
 		}
 	}
 
 	void print(){
 		node* curr = head;
+		int i = -1;
 		while(curr){
+			cout << i << " val: " << curr->data << " link_lenghts: " << curr->link_length << " ";
 			int layers = 1;
 			node* above = curr;
 			while(above->above){
 				++layers;
 				above = above->above;
-			}
-			cout << "(" << curr->data << ", " << layers << ") ";
+				cout << above->link_length << " ";
+			};
 			curr = curr->right;
+			++i;
+			cout << endl;
 		}
-		cout << "length: " << length << " height: " << height << endl;
+		cout << "length: " << length << " height: " << height << endl << endl;
 	}
 };
 
@@ -181,10 +238,13 @@ int main(){
         cin >> a >> b;
         if(a == 1){
         	sl.insert(b);
-        }else{
+        	sl.print();
+        }else if(a == 2){
         	sl.remove(b);
+        	sl.print();
+        }else{
+        	cout << sl.get(b) << endl;
         }
-        sl.print();
     }
     return 0;
 }
