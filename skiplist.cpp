@@ -52,7 +52,7 @@ struct skiplist{
 		head->link_length = 1;
 	}
 	
-	inline node* add_above(node *h, type val){
+	inline node *add_above(node *h, type val){
 		h->above = new node(val);
 		h->above->below = h;
 		return h->above;
@@ -67,7 +67,7 @@ struct skiplist{
 		++height;
 	}
 
-	inline node* delete_top(node *top){
+	inline node *delete_top(node *top){
 		top = top->below;
 		delete top->above;
 		top->above = NULL;
@@ -90,7 +90,7 @@ struct skiplist{
 	}
 
 	// Finds rightmost node with value less than val in list with head h (linear single layer search)
-	inline node* find(node *h, type val){
+	inline node *find(node *h, type val){
 		while(h->right->data < val){
 			h = h->right;
 		}
@@ -98,7 +98,7 @@ struct skiplist{
 	}
 
 	// Finds rightmost node with value less than val in the skiplist with head top h (multilayer search)
-	inline node* ffind(node *h, type val){
+	inline node *ffind(node *h, type val){
 		node *pos = find(head_top, val);
 		while(pos->below){
 			pos = find(pos->below, val);
@@ -107,7 +107,7 @@ struct skiplist{
 	}
 
 	// Returns first node with value not less than val (Expected Time: O(log(length)))
-	inline node* find(type val){
+	inline node *find(type val){
 		return ffind(head, val)->right;
 	}
 
@@ -184,7 +184,7 @@ struct skiplist{
 
 	// Removes the first node with value val from the list if present (Expected Time: O(log(length)))
 	inline void erase(type val){
-		node* target = find(val);
+		node *target = find(val);
 		if(target->data == val){
 			int layer = 1;
 
@@ -222,12 +222,12 @@ struct skiplist{
 	}
 
 	void print(){
-		node* curr = head;
+		node *curr = head;
 		int i = -1;
 		while(curr){
 			cout << i << " val: " << curr->data << " link_lenghts: " << curr->link_length << " ";
 			int layers = 1;
-			node* above = curr;
+			node *above = curr;
 			while(above->above){
 				++layers;
 				above = above->above;
