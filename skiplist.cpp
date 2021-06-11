@@ -32,6 +32,7 @@ struct skiplist{
 		int link_length;	// Length of the link from this node to the node to its right
 	
 		node(type val) : left(NULL), right(NULL), above(NULL), below(NULL), data(val), link_length(0){}
+		
 	};
 
 	// rng() generates u.a.r. from [0, 2^32 - 1]
@@ -182,7 +183,7 @@ struct skiplist{
 	}
 
 	// Removes the first node with value val from the list if present (Expected Time: O(log(length)))
-	inline void remove(type val){
+	inline void erase(type val){
 		node* target = find(val);
 		if(target->data == val){
 			int layer = 1;
@@ -238,6 +239,7 @@ struct skiplist{
 		}
 		cout << "length: " << length << " height: " << height << endl << endl;
 	}
+	
 };
 
 
