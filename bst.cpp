@@ -26,7 +26,7 @@ auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 cout << duration.count() << endl;
 */
 
-template<class type = int, type VAL_MIN = INT_MIN>
+template<class type = int>
 struct tree {
 
 	struct node {
@@ -34,16 +34,26 @@ struct tree {
 		node *left, *right;
 		type data;
 
-		node(type val) : left(NULL), right(NULL), data(val) {}
+		node(type val) : left(NULL), right(NULL), data(val){}
 
 	};
 
-	int size;
-
 	node *root;
 
-	tree() : size(0) {
-		root = new node(VAL_MIN);
+	tree() : root(NULL) {}
+
+	inline type mn(node *root){
+		while (root->left) {
+			root = root->left;
+		}
+		return root->data;
+	}
+
+	inline type mx(node *root){
+		while (root->right) {
+			root = root->right;
+		}
+		return root->data;
 	}
 
 	node *find(node *root, type val) {
@@ -65,10 +75,9 @@ struct tree {
 
 	node *insert(node *root, type val) {
 		if (root == NULL) {
-			++size;
 			return new node(val);
 		}
-		if (val < root->data) {
+		if (root->data > val) {
 			root->left = insert(root->left, val);
 		} else {
 			root->right = insert(root->right, val);
@@ -89,7 +98,6 @@ struct tree {
 		} else if (root->data < val) {
 			root->right = erase(root->right, val);
 		} else {
-			--size;
 			if (root->left == NULL) {
 				node *temp = root->right;
 				delete root;
@@ -100,20 +108,9 @@ struct tree {
 				delete root;
 				return temp;
 			}
-			if (root->left->right == NULL) {
-				node *temp = root->left;
-				temp->right = root->right;
-				delete root;
-				return temp;
-			}
-			node *par = root->left;
-			while (par->right->right) {
-				par = par->right;
-			}
-			node *pred = par->right;
-			root->data = pred->data;
-			par->right = pred->left;
-			delete pred;
+			type pred = mx(root->left);
+			root->left = erase(root->left, pred);
+			root->data = pred;
 		}
 		return root;
 	}
@@ -131,6 +128,10 @@ struct tree {
 		preorder(root->right);
 	}
 
+	inline void preorder(){
+		preorder(root);
+	}
+
 	void inorder(node *root){
 		if (root == NULL){
 			return;
@@ -140,6 +141,10 @@ struct tree {
 		inorder(root->right);
 	}
 
+	inline void inorder(){
+		inorder(root);
+	}
+
 	void postorder(node *root){
 		if (root == NULL){
 			return;
@@ -147,6 +152,10 @@ struct tree {
 		postorder(root->left);
 		postorder(root->right);
 		cout << root->data << " ";
+	}
+
+	inline void postorder(){
+		postorder(root);
 	}
 };
 
@@ -171,13 +180,13 @@ int main() {
 		} else if (line.substr(0, 2) == "R ") {
 			tree.erase(stoi(line.substr(2)));
 		} else if (line == "PREFIXA") {
-			tree.preorder(tree.root->right);
+			tree.preorder();
 			cout << endl;
 		} else if (line == "INFIXA") {
-			tree.inorder(tree.root->right);
+			tree.inorder();
 			cout << endl;
 		} else if (line == "POSFIXA") {
-			tree.postorder(tree.root->right);
+			tree.postorder();
 			cout << endl;
 		}
 	}
