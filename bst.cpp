@@ -76,7 +76,7 @@ struct tree {
 		return root;
 	}
 
-	void insert(type val) {
+	inline void insert(type val) {
 		root = insert(root, val);
 	}
 
@@ -122,7 +122,7 @@ struct tree {
 		return root;
 	}
 
-	void erase(type val) {
+	inline void erase(type val) {
 		root = erase(root, val);
 	}
 
