@@ -63,7 +63,7 @@ struct tree {
 		return find(root, val);
 	}
 
-	node *insert(node* root, type val) {
+	node *insert(node *root, type val) {
 		if (root == NULL) {
 			++size;
 			return new node(val);
@@ -91,26 +91,26 @@ struct tree {
 		} else {
 			--size;
 			if (root->left == NULL) {
-				node* temp = root->right;
+				node *temp = root->right;
 				delete root;
 				return temp;
 			}
 			if (root->right == NULL) {
-				node* temp = root->left;
+				node *temp = root->left;
 				delete root;
 				return temp;
 			}
 			if (root->left->right == NULL) {
-				node* temp = root->left;
+				node *temp = root->left;
 				temp->right = root->right;
 				delete root;
 				return temp;
 			}
-			node* par = root->left;
+			node *par = root->left;
 			while (par->right->right) {
 				par = par->right;
 			}
-			node* pred = par->right;
+			node *pred = par->right;
 			root->data = pred->data;
 			par->right = pred->left;
 			delete pred;
