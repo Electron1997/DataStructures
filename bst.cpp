@@ -90,10 +90,6 @@ struct tree {
 			root->right = erase(root->right, val);
 		} else {
 			--size;
-			if (root->left == NULL && root->right == NULL) {
-				delete root;
-				return NULL;
-			}
 			if (root->left == NULL) {
 				node* temp = root->right;
 				delete root;
