@@ -22,7 +22,7 @@ cout << duration.count() << endl;
 */
 
 // Creates skip list with probability NUM/DEN
-template<class type, type VAL_MIN = INT_MIN, type VAL_MAX = INT_MAX, int NUM = 1, int DEN = 2>
+template<class type = int, type VAL_MIN = INT_MIN, type VAL_MAX = INT_MAX, int NUM = 1, int DEN = 2>
 struct skiplist{
 
 	struct node{
