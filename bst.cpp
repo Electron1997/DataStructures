@@ -27,7 +27,7 @@ cout << duration.count() << endl;
 */
 
 template<class type = int>
-struct tree {
+struct bst {
 
 	struct node {
 
@@ -40,7 +40,7 @@ struct tree {
 
 	node *root;
 
-	tree() : root(NULL) {}
+	bst() : root(NULL) {}
 
 	inline type mn(node *root){
 		while (root->left) {
@@ -165,7 +165,7 @@ int main() {
 	cin.tie(NULL);	// untie cin from cout (no automatic flush before read)
 	*/
 	string line;
-	tree<int> tree;
+	bst<int> tree;
 	while (cin) {
 		getline(cin, line);
 		if (line.substr(0, 2) == "I ") {
