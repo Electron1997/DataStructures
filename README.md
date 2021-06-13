@@ -36,6 +36,8 @@ Will be added soon.
 
 ## Trie
 
+[trie.cpp](https://github.com/Electron1997/DataStructures/blob/main/trie.cpp) contains an array-based trie implementation with insert and look-up operations. The code is actually a solution to https://www.spoj.com/problems/ADAINDEX.
+
 ### Insertion
 
 ### Lookup
