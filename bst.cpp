@@ -79,7 +79,7 @@ struct tree {
 		}
 		if (root->data > val) {
 			root->left = insert(root->left, val);
-		} else {
+		} else if (root->data < val) {
 			root->right = insert(root->right, val);
 		}
 		return root;
