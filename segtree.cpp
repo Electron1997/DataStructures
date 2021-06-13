@@ -82,18 +82,18 @@ int main(){
     cin >> n >> m;
     ll a[n];
     read(a, n);
-    segtree<ll> *S = new segtree<ll>(a, n, 0);
+    segtree<ll> *st = new segtree<ll>(a, n, 0);
     loop(i, m){
     	int q;
     	cin >> q;
     	if(q == 1){
     		int i, v;
     		cin >> i >> v;
-    		S->update(i, v);
+    		st->update(i, v);
     	}else{
     		int l, r;
     		cin >> l >> r;
-    		cout << S->range(l, r) << endl;
+    		cout << st->range(l, r) << endl;
     	}
     }
     return 0;
