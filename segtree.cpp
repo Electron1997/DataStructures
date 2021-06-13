@@ -39,8 +39,7 @@ struct segtree{
 	}
 
 	// Time: O(N)
-	void build_tree(type a[], int n, type e){
-		E = e;
+	segtree(type a[], int n, type e) : E(e){
 		for(int i = 0; i < n; ++i){
 			tree[N + i] = a[i];
 		}
@@ -83,8 +82,7 @@ int main(){
     cin >> n >> m;
     ll a[n];
     read(a, n);
-    segtree<>* S = (segtree<>*) malloc(sizeof(segtree<>));
-    S->build_tree(a, n, 0);
+    segtree<ll> *S = new segtree<ll>(a, n, 0);
     loop(i, m){
     	int q;
     	cin >> q;
