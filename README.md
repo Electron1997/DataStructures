@@ -16,7 +16,7 @@ Will be added soon.
 
 ## Disjoint Set Union
 
-[dsu.cpp](https://github.com/Electron1997/DataStructures/blob/main/dsu.cpp) contains a DSU implementation with efficient union and find operations. The code is actually a solution to https://www.spoj.com/problems/FOXLINGS.
+[dsu.cpp](https://github.com/Electron1997/DataStructures/blob/main/dsu.cpp) contains a DSU implementation with efficient union and find operations. The code is actually a solution to https://www.spoj.com/problems/ADABRANC.
 
 ### Union
 
