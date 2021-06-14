@@ -12,6 +12,8 @@ using namespace std;
 
 typedef long long ll;
 typedef unsigned long long ull;
+typedef tuple<int, int, int, int> edge;	// weight, index, u, v
+typedef tuple<int, int, int> query;	// weight, index, v
 
 /*	// RANDOM NUMBER GENERATOR
 // rng() generates u.a.r. from [0, 2^32 - 1]
@@ -29,12 +31,12 @@ cout << duration.count() << endl;
 template<int N = 100005>
 struct dsu {
 
-	int par[N], h[N];
+	int par[N], size[N];
 
 	dsu(int n = N){
 		for(int i = 0; i < n; ++i){
 			par[i] = i;
-			h[i] = 1;
+			size[i] = 1;
 		}
 	}
 
@@ -51,13 +53,11 @@ struct dsu {
 	    int s = find(i);
 	    int t = find(j);
 	    if(s != t){
-	        if(h[s] > h[t]){
+	        if(size[s] > size[t]){
 	            swap(s, t);
 	        }
 	        par[s] = t;
-	        if(h[s] == h[t]){
-	            ++h[t];
-	        }
+	        size[t] += size[s];
 	    }
 	}
 
@@ -65,7 +65,7 @@ struct dsu {
 	void reset(int n = N){
 	    loop(i, n){
 	        par[i] = i;
-	        h[i] = 1;
+	        size[i] = 1;
 	    }
 	}
 
@@ -76,25 +76,33 @@ int main(){
 	ios_base::sync_with_stdio(false);	// unsync C- and C++-streams (stdio, iostream)
 	cin.tie(NULL);	// untie cin from cout (no automatic flush before read)
 	*/
-    int n, m, id = 1;
-    cin >> n >> m;
-    dsu<200005> *uf = new dsu<200005>();
-    unordered_map<int, int> mp;
-    int sol = n;
+    int n, m, q;
+    cin >> n >> m >> q;
+    edge e[m];
     loop(i, m){
-    	int u, v;
-    	cin >> u >> v;
-    	if(!mp[u]){
-    		mp[u] = id++;
-    	}
-    	if(!mp[v]){
-    		mp[v] = id++;
-    	}
-    	if(uf->find(mp[u]) != uf->find(mp[v])){
-    		--sol;
-    	}
-    	uf->join(mp[u], mp[v]);
+    	int u, v, w;
+    	cin >> u >> v >> w;
+    	e[i] = {w, i, u, v};
     }
-    cout << sol << endl;
+    sort(e, e + m, greater<edge>());
+    query qu[q];
+    loop(i, q){
+    	int v, w;
+    	cin >> v >> w;
+    	qu[i] = {w, i, v};
+    }
+    sort(qu, qu + q, greater<query>());
+    dsu<> *uf = new dsu<>(n);
+    int k = 0, sol[q];
+    loop(i, q){
+    	while(k < m && get<0>(e[k]) >= get<0>(qu[i])){
+    		uf->join(get<2>(e[k]), get<3>(e[k]));
+    		++k;
+    	}
+    	sol[get<1>(qu[i])] = uf->size[uf->find(get<2>(qu[i]))];
+    }
+    loop(i, q){
+    	cout << sol[i] << endl;
+    }
     return 0;
 }
