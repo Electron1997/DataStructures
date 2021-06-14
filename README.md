@@ -16,6 +16,12 @@ Will be added soon.
 
 ## Disjoint Set Union
 
+[dsu.cpp](https://github.com/Electron1997/DataStructures/blob/main/dsu.cpp) contains a DSU implementation with efficient union and find operations. The code is actually a solution to https://www.spoj.com/problems/FOXLINGS.
+
+### Union
+
+### Find
+
 ## Segment Tree
 
 [segtree.cpp](https://github.com/Electron1997/DataStructures/blob/main/segtree.cpp) contains an array-based segment tree implementation with iterative range and update operations. The code is actually a solution to https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/A.
