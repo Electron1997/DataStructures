@@ -42,6 +42,10 @@ Will be added soon.
 
 ### Indexing
 
+## Splay Tree
+
+Will be added soon.
+
 ## Treap
 
 Will be added soon.
