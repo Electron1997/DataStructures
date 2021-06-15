@@ -27,7 +27,7 @@ cout << duration.count() << endl;
 */
 
 template<class type = int>
-struct bst {
+struct tree {
 
 	struct node {
 
@@ -40,7 +40,7 @@ struct bst {
 
 	node *root;
 
-	bst() : root(NULL) {}
+	tree() : root(NULL) {}
 
 	inline type mn(node *root){
 		while (root->left) {
@@ -165,28 +165,28 @@ int main() {
 	cin.tie(NULL);	// untie cin from cout (no automatic flush before read)
 	*/
 	string line;
-	bst<int> tree;
+	tree<int> bst;
 	while (cin) {
 		getline(cin, line);
 		if (line.substr(0, 2) == "I ") {
-			tree.insert(stoi(line.substr(2)));
+			bst.insert(stoi(line.substr(2)));
 		} else if (line.substr(0, 2) == "P ") {
 			int u = stoi(line.substr(2));
-			if (tree.find(u)){
+			if (bst.find(u)){
 				cout << u << " existe" << endl;
 			}else{
 				cout << u << " nao existe" << endl;
 			}
 		} else if (line.substr(0, 2) == "R ") {
-			tree.erase(stoi(line.substr(2)));
+			bst.erase(stoi(line.substr(2)));
 		} else if (line == "PREFIXA") {
-			tree.preorder();
+			bst.preorder();
 			cout << endl;
 		} else if (line == "INFIXA") {
-			tree.inorder();
+			bst.inorder();
 			cout << endl;
 		} else if (line == "POSFIXA") {
-			tree.postorder();
+			bst.postorder();
 			cout << endl;
 		}
 	}
