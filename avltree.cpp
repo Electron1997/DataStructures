@@ -97,7 +97,7 @@ struct tree {
 		} else if (bal < -1) {
 			node *child = root->right;
 			if (height(child->right) < height(child->left)) {
-				root->left = rotate(child, true);
+				root->right = rotate(child, true);
 			}
 			return rotate(root, false);
 		}
