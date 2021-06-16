@@ -43,14 +43,14 @@ struct tree {
 
 	tree() : root(NULL) {}
 
-	inline type mn(node *root){
+	inline type mn(node *root) {
 		while (root->left) {
 			root = root->left;
 		}
 		return root->data;
 	}
 
-	inline type mx(node *root){
+	inline type mx(node *root) {
 		while (root->right) {
 			root = root->right;
 		}
@@ -58,7 +58,7 @@ struct tree {
 	}
 
 	// Recomputes height and size of root
-	inline void update(node *root){
+	inline void update(node *root) {
 		root->height = 1;
 		root->size = 1;
 		if (root->left) {
@@ -81,12 +81,16 @@ struct tree {
 		return new_root;
 	}
 
-	inline int height(node *root){
+	inline int height(node *root) {
 		return root ? root->height : 0;
 	}
 
+	inline int size(node *root) {
+		return root ? root->size : 0;
+	}
+
 	// Performs rebalancing and updates height and size
-	inline node *balance(node *root){
+	inline node *balance(node *root) {
 		int bal = height(root->left) - height(root->right);
 		if (bal > 1) {
 			node *child = root->left;
@@ -120,6 +124,39 @@ struct tree {
 
 	inline node *find(type val) {
 		return find(root, val);
+	}
+
+	node *get(node *root, int index) {
+		int left_size = size(root->left);
+		if (index < left_size) {
+			return get(root->left, index);
+		}
+		if (index > left_size) {
+			return get(root->right, index - left_size - 1);
+		}
+		return root;
+	}
+
+	inline type get(int index) {
+		return get(root, index)->data;
+	}
+
+	// Returns number of elements with value less than val
+	int index(node *root, type val) {
+		if (root == NULL) {
+			return 0;
+		}
+		if (val < root->data) {
+			return index(root->left, val);
+		}
+		if (val > root->data) {
+			return size(root->left) + 1 + index(root->right, val);
+		}
+		return size(root->left);
+	}
+
+	inline int index(type val) {
+		return index(root, val);
 	}
 
 	node *insert(node *root, type val) {
@@ -213,23 +250,27 @@ int main() {
 	ios_base::sync_with_stdio(false);	// unsync C- and C++-streams (stdio, iostream)
 	cin.tie(NULL);	// untie cin from cout (no automatic flush before read)
 	*/
-	tree<int> tree;
-	int n, m;
-	cin >> n >> m;
-	loop(i, n){
-		int u;
-		cin >> u;
-		tree.insert(u);
-		tree.inorder();
-		cout << "Height: " << tree.root->height << endl;
-	}
-	cout << "Size: " << tree.root->size << endl;
-	loop(i, m){
-		int u;
-		cin >> u;
-		tree.erase(u);
-		tree.inorder();
-		cout << "\nSize: " << tree.root->size << "Height: " << tree.root->height << endl;
+	tree<int> ordered_set;
+	int q;
+	scanf("%d", &q);
+	loop (i, q) {
+		char op;
+		int n;
+		scanf("\n%c", &op);
+		scanf("%d", &n);
+		if (op == 'I') {
+			ordered_set.insert(n);
+		} else if (op == 'D') {
+			ordered_set.erase(n);
+		} else if (op == 'K') {
+			if (ordered_set.root == NULL || n > ordered_set.root->size){
+				printf("invalid\n");
+			}else{
+				printf("%d\n", ordered_set.get(n - 1));
+			}
+		} else {
+			printf("%d\n", ordered_set.index(n));
+		}
 	}
 	return 0;
 }
