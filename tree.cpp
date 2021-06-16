@@ -42,6 +42,7 @@ struct tree {
 
 	tree() : root(NULL) {}
 
+	// Returns min element in subtree rooted at root
 	inline type mn(node *root){
 		while (root->left) {
 			root = root->left;
@@ -49,6 +50,7 @@ struct tree {
 		return root->data;
 	}
 
+	// Returns max element in subtree rooted at root
 	inline type mx(node *root){
 		while (root->right) {
 			root = root->right;
@@ -56,30 +58,32 @@ struct tree {
 		return root->data;
 	}
 
+	// Returns node of value val in subtree rooted at root (NULL if not present)
 	node *find(node *root, type val) {
 		if (root == NULL) {
 			return NULL;
 		}
-		if (root->data == val) {
-			return root;
-		}
-		if (root->data > val) {
+		if (val < root->data) {
 			return find(root->left, val);
 		}
-		return find(root->right, val);
+		if (val > root->data) {
+			return find(root->right, val);
+		}
+		return root;
 	}
 
 	inline node *find(type val) {
 		return find(root, val);
 	}
 
+	// Inserts val into subtree rooted at root
 	node *insert(node *root, type val) {
 		if (root == NULL) {
 			return new node(val);
 		}
-		if (root->data > val) {
+		if (val < root->data) {
 			root->left = insert(root->left, val);
-		} else if (root->data < val) {
+		} else if (val > root->data) {
 			root->right = insert(root->right, val);
 		}
 		return root;
@@ -89,13 +93,14 @@ struct tree {
 		root = insert(root, val);
 	}
 
+	// If present, removes val from subtree rooted at root
 	node *erase(node *root, type val) {
 		if (root == NULL) {
 			return NULL;
 		}
-		if (root->data > val) {
+		if (val < root->data) {
 			root->left = erase(root->left, val);
-		} else if (root->data < val) {
+		} else if (val > root->data) {
 			root->right = erase(root->right, val);
 		} else {
 			if (root->left == NULL) {
