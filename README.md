@@ -2,7 +2,7 @@
 
 ## AVL Tree
 
-[avltree.cpp](https://github.com/Electron1997/DataStructures/blob/main/avltree.cpp) contains an AVL tree implementation with recursive insert, delete and look-up and indexing operations. The code is actually a solution to https://www.spoj.com/problems/ORDERSET.
+[avltree.cpp](https://github.com/Electron1997/DataStructures/blob/main/avltree.cpp) contains an AVL tree implementation with recursive insert, delete, look-up and indexing operations. The code is actually a solution to https://www.spoj.com/problems/ORDERSET.
 
 ### Insertion
 
