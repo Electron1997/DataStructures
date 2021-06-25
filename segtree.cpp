@@ -30,7 +30,7 @@ cout << duration.count() << endl;
 template<class type = ll, int N = 100005>
 struct segtree{
 
-	// E: neutral element (set by build_tree())
+	// E: neutral element
 	type E, tree[N << 1];
 
 	// Associative operation
