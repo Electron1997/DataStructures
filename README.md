@@ -2,7 +2,7 @@
 
 ## AVL Tree
 
-[avltree.cpp](https://github.com/Electron1997/DataStructures/blob/main/avltree.cpp) contains an AVL tree implementation with recursive insert, delete, look-up and indexing operations. The code is actually a solution to https://www.spoj.com/problems/ORDERSET.
+[avl_tree.cpp](https://github.com/Electron1997/DataStructures/blob/main/avltree.cpp) contains an AVL tree implementation with recursive insert, delete, look-up and indexing operations. The code is actually a solution to https://www.spoj.com/problems/ORDERSET.
 
 ### Insertion
 
@@ -32,7 +32,7 @@
 
 ## Segment Tree
 
-[segtree.cpp](https://github.com/Electron1997/DataStructures/blob/main/segtree.cpp) contains an array-based segment tree implementation with iterative range and update operations. The code is actually a solution to https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/A.
+[segment_tree.cpp](https://github.com/Electron1997/DataStructures/blob/main/segtree.cpp) contains an array-based segment tree implementation with iterative range and update operations. The code is actually a solution to https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/A.
 
 ### Range
 
@@ -40,7 +40,7 @@
 
 ## Skip List
 
-[skiplist.cpp](https://github.com/Electron1997/DataStructures/blob/main/skiplist.cpp) contains the implementation of a skip list with (in expectation) logarithmic insert, delete, look-up and indexing operations. The code is actually a solution to https://www.hackerearth.com/practice/algorithms/searching/binary-search/practice-problems/algorithm/smallest-subarray-2-d6530e0b/.
+[skip_list.cpp](https://github.com/Electron1997/DataStructures/blob/main/skiplist.cpp) contains the implementation of a skip list with (in expectation) logarithmic insert, delete, look-up and indexing operations. The code is actually a solution to https://www.hackerearth.com/practice/algorithms/searching/binary-search/practice-problems/algorithm/smallest-subarray-2-d6530e0b/.
 
 ### Insertion
 
