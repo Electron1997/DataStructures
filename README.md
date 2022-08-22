@@ -52,11 +52,11 @@
 
 ## Splay Tree
 
-Will be added soon.
+Work in progress.
 
 ## Treap
 
-Will be added soon.
+Work in progress.
 
 ## Trie
 
