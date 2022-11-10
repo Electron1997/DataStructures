@@ -4,7 +4,7 @@
 
 [avl_tree.cpp](https://github.com/Electron1997/DataStructures/blob/main/avl_tree.cpp) contains an AVL tree implementation with recursive insert, delete, look-up and indexing operations. The code is a solution to https://www.spoj.com/problems/ORDERSET.
 
-### Insertion
+### Insertion $O(\log(n))$
 
 ### Deletion
 
