@@ -27,7 +27,7 @@ struct treap{
         int priority;
         node *left, *right;
 
-        node(type val) : data(val), priority(rng()), left(NULL), right(NULL) {}
+        node(type val, int prio) : data(val), priority(prio), left(NULL), right(NULL) {}
     };
 
     mt19937 rng;
@@ -50,13 +50,55 @@ struct treap{
         return new_root;
     }
 
-    inline void insert(type val){};
+    node *insert(type val, node *root){
+        if(!root){
+            return new node(val, rng());
+        }
+        if(val < root->data){
+            root->left = insert(val, root->left);
+            if(root->priority < root->left->priority){
+                return rotate_right(root);
+            }
+        }else if(val > root->data){
+            root->right = insert(val, root->right);
+            if(root->priority < root->right->priority){
+                return rotate_left(root);
+            }
+        }
+        return root;
+    }
 
-    inline void remove(type val);
+    inline void insert(type val){
+        root = insert(val, root);
+    }
 
-    inline void join(treap<type> other);
+    inline void remove(type val){}
 
-    inline void split(type val);
+    inline node *find(type val, node *root){
+        while(root){
+            if(val < root->data){
+                root = root->left;
+            }else if(val > root->data){
+                root = root->right;
+            }else{
+                return root;
+            }
+        }
+        return NULL;
+    }
+
+    inline void join(treap<type> other){}
+
+    inline void split(type val){}
+
+    void print_data(node *root){
+        if(!root){
+            return;
+        }
+        print_data(root->left);
+        cout << root->data << " ";
+        print_data(root->right);
+    }
 };
 
 int main(){
