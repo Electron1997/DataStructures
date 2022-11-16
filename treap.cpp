@@ -154,8 +154,8 @@ namespace treap{    // prevent conflicts with std
         // TO DO: when do we call update()?
     }
 
-    template<typename T = int>
-    std::pair<node<T>*, node<T>*> split(T value, node<T> *root);
+/*    template<typename T = int>
+    std::pair<node<T>*, node<T>*> split(T value, node<T> *root); */
 
     template<typename T = int>
     std::pair<node<T>*, node<T>*> split(unsigned index, node<T> *root){
@@ -173,7 +173,7 @@ namespace treap{    // prevent conflicts with std
             return {left, root};
         }
         if(index < left_size + root->count){
-            node<T> new_root = new node<T>(root->data, root->prio);
+            node<T> *new_root = new node<T>(root->data, root->prio);
             new_root->count = left_size + root->count - index;
             root->count = root->count - new_root->count;
             new_root->right = root->right;
@@ -196,8 +196,11 @@ namespace treap{    // prevent conflicts with std
 
     template<typename T = int>
     node<T> *join(node<T> *left, node<T> *right){
-        if(!(left && right)){
-            return left | right;
+        if(!left){
+            return right;
+        }
+        if(!right){
+            return left;
         }
         if(left->prio > right->prio){
             left->right = join(left->right, right);
@@ -240,7 +243,12 @@ int main(){
     loop(j, 5){
         int a;
         cin >> a;
-        cout << treap::rank(a, root) << endl;
+        auto roots = split(a, root);
+        cout << "Treap 1" << endl;
+        print_data(roots.f);
+        cout << "Treap 2" << endl;
+        print_data(roots.s);
+        root = join(roots.f, roots.s);
     }
     treap::print_data(root);
 
