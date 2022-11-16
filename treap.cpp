@@ -194,6 +194,7 @@ namespace treap{    // prevent conflicts with std
         return {root, rec.second};
     }
 
+    // Elements in left <= elements in right must hold! ***
     template<typename T = int>
     node<T> *join(node<T> *left, node<T> *right){
         if(!left){
@@ -202,6 +203,13 @@ namespace treap{    // prevent conflicts with std
         if(!right){
             return left;
         }
+        if(left->data == right->data){  // *** merge nodes of same value
+            left->right = right->right;
+            left->count += right->count;
+            delete right;
+            update(left);
+            return left;
+        }  
         if(left->prio > right->prio){
             left->right = join(left->right, right);
             update(left);
