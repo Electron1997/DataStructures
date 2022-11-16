@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
- 
+
 #define f first
 #define s second
 #define loop(i, n) for (int i = 0; i < n; ++i)
@@ -7,30 +7,30 @@
 #define show(a, n)                  \
     loop($, n) cout << a[$] << " "; \
     cout << endl;
- 
+
 using namespace std;
- 
+
 typedef long long ll;
 typedef unsigned long long ull;
- 
+
 // Implements multiset semantics
 namespace treap{    // prevent conflicts with std
- 
+
     // RANDOM NUMBER GENERATOR
     // rng() generates u.a.r. from [0, 2^32 - 1]
     mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
- 
+
     template<typename T = int>
     struct node{
- 
+
         T data;
         unsigned prio, size, count;
         node *left, *right;
- 
+
         node(T value, unsigned priority) : data(value), prio(priority), size(1), count(1), left(NULL), right(NULL){}
- 
+
     };
- 
+
     template<typename T = int>
     inline unsigned size(node<T> *root){
         if(!root){
@@ -38,7 +38,7 @@ namespace treap{    // prevent conflicts with std
         }
         return root->size;
     }
- 
+
     // Update all variables that depend on children or count (is called whenever children or count could have changed)
     template<typename T = int>
     inline void update(node<T> *root){
@@ -46,7 +46,7 @@ namespace treap{    // prevent conflicts with std
             root->size = size(root->left) + root->count + size(root->right);
         }
     }
- 
+
     template<typename T = int>
     inline node<T> *rotate_left(node<T> *root){
         node<T> *new_root = root->right;
@@ -54,7 +54,7 @@ namespace treap{    // prevent conflicts with std
         new_root->left = root;
         return new_root;
     }
- 
+
     template<typename T = int>
     inline node<T> *rotate_right(node<T> *root){
         node<T> *new_root = root->left;
@@ -62,7 +62,7 @@ namespace treap{    // prevent conflicts with std
         new_root->right = root;
         return new_root;
     }
- 
+
     template<typename T = int>
     node<T> *insert(T value, unsigned priority, node<T> *root){
         if(!root){
@@ -86,14 +86,14 @@ namespace treap{    // prevent conflicts with std
         update(root);
         return root;
     }
- 
+
     template<typename T = int>
     inline node<T> *insert(T value, node<T> *root){
         unsigned priority = rng();
         if(priority) --priority;    // reserve UINT_MAX for special operations
         return insert(value, priority, root);
     }
- 
+
     template<typename T = int>
     node<T> *find(T value, node<T> *root){
         while(root && root->data != value){
@@ -105,7 +105,7 @@ namespace treap{    // prevent conflicts with std
         }
         return root;
     }
- 
+
     template<typename T = int>
     node<T> *get(unsigned index, node<T> *root){
         if(!root){
@@ -120,21 +120,19 @@ namespace treap{    // prevent conflicts with std
         }
         return get(index - left_size - root->count, root->right);
     }
- 
+
+    // Returns lowest index where the element could be inserted (i.e. number of elements smaller than value)
     template<typename T = int>
-    int rank(T value, node<T> *root){
+    unsigned index(T value, node<T> *root){
         if(!root){
-            return -1;
+            return 0;
         }
-        if(value < root->data){
-            return rank(value, root->left);
+        if(value <= root->data){
+            return index(value, root->left);
         }
-        if(value > root->data){
-            return size(root->left) + root->count + rank(value, root->right);
-        }
-        return size(root->left);
+        return size(root->left) + root->count + index(value, root->right);
     }
- 
+
     template<typename T = int>
     node<T> *remove(T value, node<T> *root){
         if(!root){
@@ -153,10 +151,10 @@ namespace treap{    // prevent conflicts with std
         }
         // TO DO: when do we call update()?
     }
- 
+
 /*    template<typename T = int>
     std::pair<node<T>*, node<T>*> split(T value, node<T> *root); */
- 
+
     template<typename T = int>
     std::pair<node<T>*, node<T>*> split(unsigned index, node<T> *root){
         unsigned left_size = size(root->left);  // SegFault if root is NULL
@@ -193,7 +191,7 @@ namespace treap{    // prevent conflicts with std
         update(root);
         return {root, rec.second};
     }
- 
+
     // Elements in left <= elements in right must hold! ***
     template<typename T = int>
     node<T> *join(node<T> *left, node<T> *right){
@@ -219,7 +217,7 @@ namespace treap{    // prevent conflicts with std
         update(right);
         return right;
     }
- 
+
     template<typename T = int>
     void print_data(node<T> *root){
         if(root){
@@ -228,22 +226,18 @@ namespace treap{    // prevent conflicts with std
             print_data(root->right);
         }
     }
- 
+
 } // End of namespace treap
- 
-treap::node<int> *root;
- 
-int l;
- 
-ull solve(treap::node<int> *root){
-    if(!root)
-        return 0ull;
-    ull sol = root->count * (ull) abs(l - root->data);
-    sol += solve(root->left);
-    sol += solve(root->right);
-    return sol;
+
+treap::node<int> *l, *r;
+
+int solve(treap::node<int> *root){
+    if(root == NULL)
+        return 0;
+    int sol = treap::index(root->data, l) + root->count - treap::index(root->data, r);
+    return max(sol, max(solve(root->left), solve(root->right)));
 }
- 
+
 int main(){
     /*
     auto start = chrono::high_resolution_clock::now();
@@ -251,17 +245,17 @@ int main(){
     
     ios_base::sync_with_stdio(false);   // unsync C- and C++-streams (stdio, iostream)
     cin.tie(NULL);  // untie cin from cout (no automatic flush before read)
- 
+
     int n;
     cin >> n;
     loop(i, n){
-        int a;
-        cin >> a;
-        root = treap::insert(a, root);
+        int a, b;
+        cin >> a >> b;
+        l = treap::insert(a, l);
+        r = treap::insert(b, r);
     }
-    l = treap::get(n / 2, root)->data;
-    cout << solve(root) << endl;
- 
+    cout << solve(l) << endl;
+
     /*
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
