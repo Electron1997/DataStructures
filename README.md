@@ -30,6 +30,14 @@
 
 ### Find $O(\alpha(n))$
 
+## Fenwick Tree
+
+[fenwick_tree.cpp](https://github.com/Electron1997/DataStructures/blob/main/fenwick_tree.cpp) contains a binary indexed tree implementation with efficient element update and range operations. The code is a solution to https://cses.fi/problemset/result/5418174.
+
+### Add $O(\log(n))$
+
+### Prefix $O(\log(n))$
+
 ## Segment Tree
 
 [segment_tree.cpp](https://github.com/Electron1997/DataStructures/blob/main/segment_tree.cpp) contains an array-based segment tree implementation with iterative range and update operations. The code is a solution to https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/A.
