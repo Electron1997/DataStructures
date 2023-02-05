@@ -32,7 +32,7 @@
 
 ## Fenwick Tree
 
-[fenwick_tree.cpp](https://github.com/Electron1997/DataStructures/blob/main/fenwick_tree.cpp) contains a binary indexed tree implementation with efficient element update and range operations. The code is a solution to https://cses.fi/problemset/result/5418174.
+[fenwick_tree.cpp](https://github.com/Electron1997/DataStructures/blob/main/fenwick_tree.cpp) contains a binary indexed tree implementation with efficient element update and range operations. The code is a solution to https://cses.fi/problemset/task/1651.
 
 ### Add $O(\log(n))$
 
